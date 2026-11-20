@@ -68,7 +68,7 @@ async function providerJson(
 }
 
 export async function geocode(query: string, fetcher: typeof fetch = fetch, timeoutMs = 8000): Promise<Point> {
-  const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&accept-language=pt-BR&q=" +
+  const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&dedupe=1&addressdetails=1&countrycodes=br&accept-language=pt-BR&q=" +
     encodeURIComponent(query);
   const data = await providerJson("nominatim", url, timeoutMs, fetcher, {
     Accept: "application/json", "User-Agent": "BoaEstrada/0.4 (https://boaestrada.lgsr96.workers.dev/)",
@@ -79,7 +79,8 @@ export async function geocode(query: string, fetcher: typeof fetch = fetch, time
   if (data.length === 0) {
     throw new ProviderError("nominatim", "LOCATION_NOT_FOUND", 422, "Não foi possível localizar o endereço informado.");
   }
-  const first: unknown = data[0];
+  const results = data.filter(isRecord).sort((a, b) => Number(b.importance ?? 0) - Number(a.importance ?? 0) || Number(a.place_rank ?? 99) - Number(b.place_rank ?? 99));
+  const first: unknown = results[0];
   if (!isRecord(first)) {
     throw new ProviderError("nominatim", "PROVIDER_INVALID_RESPONSE", 502, "Geocodificador retornou dados inesperados.");
   }
