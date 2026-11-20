@@ -1,12 +1,87 @@
-import { maintenancePage } from "./maintenance-page";
-type Point={lat:number;lon:number;label:string};type Route={distance:number;duration:number;geometry?:{type:"LineString";coordinates:number[][]}};
-const BARRIER={lat:-22.0085625,lon:-43.2688125,radius:150,waypoint:{lat:-22.0125625,lon:-43.2788125,label:"Contorno piloto oeste"},label:"XPRJ+HF Simão Pereira, MG"};
-const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json;charset=utf-8","access-control-allow-origin":"*"}});
-const point=(p:Point)=>`${p.lat},${p.lon}`;
-const google=(o:Point,d:Point,w:Point[]=[])=>"https://www.google.com/maps/dir/"+[o,...w,d].map(point).join("/");
-const page=`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BoaEstrada</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:linear-gradient(135deg,#083344,#0f766e 55%,#f59e0b);color:white;min-height:100vh;padding:28px}.wrap{max-width:980px;margin:auto}.brand{font-weight:800;font-size:1.3rem;margin-bottom:70px}.grid{display:grid;grid-template-columns:1fr 410px;gap:45px;align-items:center}.eyebrow{color:#fcd34d;text-transform:uppercase;letter-spacing:.15em;font-size:.75rem;font-weight:800}.title{font-size:clamp(3rem,8vw,6rem);line-height:.9;letter-spacing:-.07em;margin:18px 0}.lead{font-size:1.1rem;line-height:1.6;color:#d9f4ef}.card{background:white;color:#102a43;border-radius:22px;padding:26px;box-shadow:0 24px 70px #052e2b66}label{display:block;font-size:.8rem;font-weight:700;margin:16px 0 6px}input{width:100%;padding:13px;border:1px solid #d9e2ec;border-radius:10px;font:inherit}.check{display:flex;gap:9px;align-items:center;font-weight:400;color:#334e68}.check input{width:auto}.btn{width:100%;padding:14px;border:0;border-radius:10px;background:#f59e0b;font-weight:800;font-size:1rem;margin-top:14px;cursor:pointer}.result{display:none;margin-top:16px;padding:15px;border-radius:10px;background:#eef7f5;color:#334e68;font-size:.9rem;line-height:1.5}.result.show{display:block}.links a{display:block;text-align:center;text-decoration:none;padding:10px;border-radius:8px;color:white;background:#2563eb;font-weight:700;font-size:.8rem;margin-top:12px}@media(max-width:760px){body{padding:22px}.brand{margin-bottom:45px}.grid{grid-template-columns:1fr;gap:30px}.title{font-size:3.8rem}}.maintenance-gear{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid #ffffff88;border-radius:50%;color:#fff;text-decoration:none;background:#ffffff20;transition:background .2s}.maintenance-gear:hover,.maintenance-gear:focus-visible{background:#ffffff55;outline:2px solid #fcd34d;outline-offset:2px}.maintenance-gear svg{width:23px;height:23px}</style></head><body><div class="wrap"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div class="brand">boaestrada</div><a class="maintenance-gear" href="/manutencao" aria-label="Abrir página de manutenção" title="Manutenção da API"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2 2-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V21h-2.84v-.9a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2-2 .06-.06A1.7 1.7 0 0 0 7.4 15a1.7 1.7 0 0 0-1.56-1.04H5v-2.84h.84A1.7 1.7 0 0 0 7.4 10.08a1.7 1.7 0 0 0-.34-1.88L7 8.14l2-2 .06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.98 5V4h2.84v1a1.7 1.7 0 0 0 1.04 1.54 1.7 1.7 0 0 0 1.88-.34l.06-.06 2 2-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04H22v2.84h-1.04A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-.4 -.5)"/></svg></a></div><div class="grid"><section><div class="eyebrow">Rotas mais inteligentes</div><h1 class="title">Evite só o Free Flow.</h1><p class="lead">O BoaEstrada cria um ponto intermediário fora do trajeto do pórtico e abre a rota no Google Maps.</p></section><form class="card" id="f"><h2>Encontrar uma rota</h2><label>Origem</label><input id="o" required placeholder="Juiz de Fora, MG"><label>Destino</label><input id="d" required placeholder="Três Rios, RJ"><label class="check"><input id="a" type="checkbox" checked> Evitar pedágio Free Flow</label><button class="btn">Calcular rota</button><div class="result" id="r"></div></form></div></div><script>const f=document.querySelector("#f"),r=document.querySelector("#r"),o=document.querySelector("#o"),d=document.querySelector("#d"),a=document.querySelector("#a");f.onsubmit=async e=>{e.preventDefault();r.className="result show";r.textContent="Calculando rota…";try{const x=await fetch("/api/routes",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({origin:o.value,destination:d.value,avoid:a.checked?["free_flow"]:[]})}),j=await x.json();if(j.error)throw Error(j.message||j.error);r.innerHTML="<b>"+(j.route.waypoints.length?"Desvio aplicado":"Rota direta")+"</b><br>"+j.message+"<br>"+j.route.metrics.distanceKm+" km · "+j.route.metrics.durationMinutes+" min<div class='links'><a href='"+j.links.googleMaps+"' target='_blank'>Abrir no Google Maps</a></div>"}catch(err){r.textContent="Não foi possível calcular: "+err.message}};</script></body></html>`;
-async function geocode(q:string):Promise<Point|null>{try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&accept-language=pt-BR&q="+encodeURIComponent(q),{headers:{"accept":"application/json","user-agent":"BoaEstrada/0.3"}});if(!r.ok)return null;const a=await r.json() as Array<{lat:string;lon:string;display_name:string}>;return a[0]?{lat:+a[0].lat,lon:+a[0].lon,label:a[0].display_name}:null}catch{return null}}
-async function route(o:Point,d:Point):Promise<Route|null>{try{const u="https://router.project-osrm.org/route/v1/driving/"+o.lon+","+o.lat+";"+d.lon+","+d.lat+"?overview=full&geometries=geojson";const r=await fetch(u);if(!r.ok)return null;const j=await r.json() as {routes?:Array<Route>};return j.routes?.[0]??null}catch{return null}}
-function dist(a:number[],b:number[]){const R=6371000,rad=(x:number)=>x*Math.PI/180,dLat=rad(b[1]-a[1]),dLon=rad(b[0]-a[0]),x=Math.sin(dLat/2)**2+Math.cos(rad(a[1]))*Math.cos(rad(b[1]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
-function crosses(r:Route){return !!r.geometry?.coordinates.some(c=>dist(c, [BARRIER.lon,BARRIER.lat])<=BARRIER.radius)}
-export default{async fetch(req:Request){const u=new URL(req.url);if(req.method==="GET"&&u.pathname==="/")return new Response(page,{headers:{"content-type":"text/html;charset=utf-8"}});if(req.method==="GET"&&u.pathname==="/manutencao")return new Response(maintenancePage,{headers:{"content-type":"text/html;charset=utf-8","cache-control":"no-store"}});if(req.method==="GET"&&u.pathname==="/health")return json({status:"ok",service:"boaestrada"});if(req.method==="GET"&&u.pathname==="/api/gantries")return json({data:[BARRIER],verificationStatus:"pilot",message:"Ponto piloto aguardando validação oficial."});if(req.method==="POST"&&u.pathname==="/api/routes"){let b:{origin?:string|{lat:number;lon:number;label?:string};destination?:string|{lat:number;lon:number;label?:string};avoid?:string[]};try{b=await req.json()}catch{return json({error:"INVALID_JSON"},400)}if(!b.origin||!b.destination)return json({error:"INVALID_REQUEST",message:"origin e destination são obrigatórios."},400);const resolve=async(x:any):Promise<Point|null>=>typeof x==="string"?geocode(x):x.lat!=null&&x.lon!=null?{lat:x.lat,lon:x.lon,label:x.label??point(x)}:null;const [o,d]=await Promise.all([resolve(b.origin),resolve(b.destination)]);if(!o||!d)return json({error:"GEOCODING_FAILED",message:"Não foi possível localizar origem ou destino."},422);const direct=await route(o,d);if(!direct)return json({error:"ROUTING_FAILED",message:"Não foi possível consultar o motor de rotas."},502);let chosen=direct,waypoints:Point[]=[];if(b.avoid?.includes("free_flow")&&crosses(direct)){const candidate=await route(o,BARRIER.waypoint);const final=candidate&&await route(BARRIER.waypoint,d);if(candidate&&final&&!crosses(candidate)&&!crosses(final)){chosen={distance:candidate.distance+final.distance,duration:candidate.duration+final.duration,geometry:final.geometry};waypoints=[BARRIER.waypoint]}}const km=Math.round(chosen.distance/10)/100;return json({status:"not_verified",message:waypoints.length?"Desvio aplicado pelo ponto piloto XPRJ+HF; a coordenada ainda precisa de validação oficial.":"Rota direta não cruza o ponto piloto cadastrado.",route:{waypoints:waypoints.map(point),barrier:BARRIER.label,metrics:{distanceKm:km,durationMinutes:Math.round(chosen.duration/60)}},links:{googleMaps:google(o,d,waypoints)}})}return json({error:"NOT_FOUND"},404)}};
+import { maintenancePage } from "./maintenance-page.js";
+import { geocode, providerDiagnostics, ProviderError, routeOsrm, validPoint } from "./providers.js";
+import type { Point } from "./providers.js";
+
+const BARRIER = { lat: -22.0085625, lon: -43.2688125, radius: 150, label: "XPRJ+HF Simão Pereira, MG" };
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+  status, headers: { "content-type": "application/json;charset=utf-8", "cache-control": "no-store" },
+});
+const point = (p: Point) => `${p.lat},${p.lon}`;
+const google = (o: Point, d: Point) =>
+  "https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent(point(o)) +
+  "&destination=" + encodeURIComponent(point(d)) + "&travelmode=driving";
+const page=`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BoaEstrada</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:linear-gradient(135deg,#083344,#0f766e 55%,#f59e0b);color:white;min-height:100vh;padding:28px}.wrap{max-width:980px;margin:auto}.brand{font-weight:800;font-size:1.3rem;margin-bottom:70px}.grid{display:grid;grid-template-columns:1fr 410px;gap:45px;align-items:center}.eyebrow{color:#fcd34d;text-transform:uppercase;letter-spacing:.15em;font-size:.75rem;font-weight:800}.title{font-size:clamp(3rem,8vw,6rem);line-height:.9;letter-spacing:-.07em;margin:18px 0}.lead{font-size:1.1rem;line-height:1.6;color:#d9f4ef}.card{background:white;color:#102a43;border-radius:22px;padding:26px;box-shadow:0 24px 70px #052e2b66}label{display:block;font-size:.8rem;font-weight:700;margin:16px 0 6px}input{width:100%;padding:13px;border:1px solid #d9e2ec;border-radius:10px;font:inherit}.check{display:flex;gap:9px;align-items:center;font-weight:400;color:#334e68}.check input{width:auto}.btn{width:100%;padding:14px;border:0;border-radius:10px;background:#f59e0b;font-weight:800;font-size:1rem;margin-top:14px;cursor:pointer}.result{display:none;margin-top:16px;padding:15px;border-radius:10px;background:#eef7f5;color:#334e68;font-size:.9rem;line-height:1.5}.result.show{display:block}.links a{display:block;text-align:center;text-decoration:none;padding:10px;border-radius:8px;color:white;background:#2563eb;font-weight:700;font-size:.8rem;margin-top:12px}@media(max-width:760px){body{padding:22px}.brand{margin-bottom:45px}.grid{grid-template-columns:1fr;gap:30px}.title{font-size:3.8rem}}.maintenance-gear{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid #ffffff88;border-radius:50%;color:#fff;text-decoration:none;background:#ffffff20;transition:background .2s}.maintenance-gear:hover,.maintenance-gear:focus-visible{background:#ffffff55;outline:2px solid #fcd34d;outline-offset:2px}.maintenance-gear svg{width:23px;height:23px}</style></head><body><div class="wrap"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div class="brand">boaestrada</div><a class="maintenance-gear" href="/manutencao" aria-label="Abrir página de manutenção" title="Manutenção da API"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2 2-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V21h-2.84v-.9a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2-2 .06-.06A1.7 1.7 0 0 0 7.4 15a1.7 1.7 0 0 0-1.56-1.04H5v-2.84h.84A1.7 1.7 0 0 0 7.4 10.08a1.7 1.7 0 0 0-.34-1.88L7 8.14l2-2 .06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.98 5V4h2.84v1a1.7 1.7 0 0 0 1.04 1.54 1.7 1.7 0 0 0 1.88-.34l.06-.06 2 2-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04H22v2.84h-1.04A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-.4 -.5)"/></svg></a></div><div class="grid"><section><div class="eyebrow">Rotas mais inteligentes</div><h1 class="title">Evite só o Free Flow.</h1><p class="lead">O BoaEstrada consulta uma rota dirigível. Desvios de Free Flow continuam experimentais e são analisados no laboratório.</p></section><form class="card" id="f"><h2>Encontrar uma rota</h2><label>Origem</label><input id="o" required placeholder="Juiz de Fora, MG"><label>Destino</label><input id="d" required placeholder="Três Rios, RJ"><label class="check"><input id="a" type="checkbox" checked> Evitar pedágio Free Flow</label><button class="btn">Calcular rota</button><div class="result" id="r"></div></form></div></div><script>const f=document.querySelector("#f"),r=document.querySelector("#r"),o=document.querySelector("#o"),d=document.querySelector("#d"),a=document.querySelector("#a");f.onsubmit=async e=>{e.preventDefault();r.className="result show";r.textContent="Calculando rota…";try{const x=await fetch("/api/routes",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({origin:o.value,destination:d.value,avoid:a.checked?["free_flow"]:[]})}),j=await x.json();if(j.error)throw Error(j.message||j.error);r.innerHTML="<b>"+(j.route.waypoints.length?"Desvio experimental":"Rota original (não verificada)")+"</b><br>"+j.message+"<br>"+j.route.metrics.distanceKm+" km · "+j.route.metrics.durationMinutes+" min<div class='links'><a href='"+j.links.googleMaps+"' target='_blank'>Abrir no Google Maps</a></div>"}catch(err){r.textContent="Não foi possível calcular: "+err.message}};</script></body></html>`;
+function validLocation(value: unknown): value is Point | string {
+  return (typeof value === "string" && value.trim().length > 0 && value.length <= 200) ||
+    validPoint(value) ||
+    (typeof value === "object" && value !== null && "lat" in value && "lon" in value &&
+      typeof value.lat === "number" && typeof value.lon === "number" &&
+      validPoint({ lat: value.lat, lon: value.lon, label: "" }));
+}
+async function resolveLocation(value: Point | string | { lat: number; lon: number; label?: string }): Promise<Point> {
+  if (typeof value === "string") return geocode(value.trim());
+  return { lat: value.lat, lon: value.lon, label: value.label ?? `${value.lat},${value.lon}` };
+}
+function safeError(error: unknown): Response {
+  if (error instanceof ProviderError) {
+    console.warn(JSON.stringify({ event: "provider_failure", provider: error.provider, code: error.code }));
+    return json({ error: error.code, provider: error.provider, message: error.publicMessage }, error.httpStatus);
+  }
+  console.error(JSON.stringify({ event: "routing_unexpected_error" }));
+  return json({ error: "INTERNAL_ERROR", message: "Erro inesperado ao calcular rota." }, 500);
+}
+
+export default {
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    if (req.method === "GET" && url.pathname === "/")
+      return new Response(page, { headers: { "content-type": "text/html;charset=utf-8" } });
+    if (req.method === "GET" && url.pathname === "/manutencao")
+      return new Response(maintenancePage, { headers: { "content-type": "text/html;charset=utf-8", "cache-control": "no-store" } });
+    if (req.method === "GET" && url.pathname === "/health")
+      return json({ status: "ok", service: "boaestrada", note: "Verifica apenas o Worker, não os provedores." });
+    if (req.method === "GET" && url.pathname === "/api/providers/health")
+      return json(await providerDiagnostics());
+    if (req.method === "GET" && url.pathname === "/api/gantries")
+      return json({ data: [BARRIER], verificationStatus: "pilot", message: "Ponto piloto aguardando validação oficial." });
+    if (req.method === "POST" && url.pathname === "/api/routes") {
+      let body: unknown;
+      try { body = await req.json(); }
+      catch { return json({ error: "INVALID_JSON", message: "JSON inválido." }, 400); }
+      if (!body || typeof body !== "object" || Array.isArray(body))
+        return json({ error: "INVALID_REQUEST", message: "Envie origem e destino válidos." }, 400);
+      const input = body as Record<string, unknown>;
+      if (!validLocation(input.origin) || !validLocation(input.destination))
+        return json({ error: "INVALID_REQUEST", message: "Origem ou destino inválidos." }, 400);
+      const avoid = input.avoid;
+      if (avoid !== undefined && (!Array.isArray(avoid) || avoid.some(v => v !== "free_flow")))
+        return json({ error: "UNSUPPORTED_AVOID_MODE", message: "Somente a opção free_flow está disponível para análise não verificada." }, 400);
+      try {
+        // Nominatim permite baixo volume de consultas. Não disparar duas consultas paralelas por requisição.
+        const origin = await resolveLocation(input.origin as Point | string);
+        const destination = await resolveLocation(input.destination as Point | string);
+        const direct = await routeOsrm(origin, destination);
+        // O OSRM público não implementa exclusão de arestas Free Flow: nunca aplicar waypoint piloto em produção.
+        return json({
+          status: "not_verified",
+          reason: "FREE_FLOW_EXCLUSION_NOT_VERIFIED",
+          message: "Rota original calculada; o desvio de pedágio Free Flow ainda não foi validado. Não há garantia de ausência de cobrança.",
+          origin: { lat: origin.lat, lon: origin.lon },
+          destination: { lat: destination.lat, lon: destination.lon },
+          route: {
+            waypoints: [],
+            barrier: BARRIER.label,
+            geometry: direct.geometry,
+            metrics: { distanceKm: Math.round(direct.distance / 10) / 100,
+              durationMinutes: Math.round(direct.duration / 60) },
+          },
+          links: { googleMaps: google(origin, destination) },
+          validation: { freeFlowAvoidance: false, gantryCoordinateVerified: false, conventionalTollsExcluded: false },
+        });
+      } catch (error) {
+        return safeError(error);
+      }
+    }
+    return json({ error: "NOT_FOUND" }, 404);
+  },
+};
