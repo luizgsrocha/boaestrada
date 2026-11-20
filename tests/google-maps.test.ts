@@ -1,0 +1,3 @@
+import {describe,expect,it} from "vitest";
+import {googleMapsDirectionsUrl,chooseWaypoint} from "../src/google-maps.js";
+describe("Google Maps com waypoint",()=>{it("gera origem, ponto intermediário e destino",()=>{expect(googleMapsDirectionsUrl({latitude:-21.7609533,longitude:-43.3501129},{latitude:-22.1201732,longitude:-43.1072134},[{latitude:-22.0006641,longitude:-43.3220926}])).toBe("https://www.google.com/maps/dir/-21.7609533,-43.3501129/-22.0006641,-43.3220926/-22.1201732,-43.1072134")});it("usa o primeiro waypoint válido",()=>{expect(chooseWaypoint([{latitude:1,longitude:2}],{latitude:3,longitude:4})).toEqual({latitude:1,longitude:2})})})
