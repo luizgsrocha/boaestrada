@@ -40,25 +40,30 @@ async function providerJson(
 ): Promise<unknown> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  let response: Response;
   try {
-    response = await fetcher(url, { signal: controller.signal, headers });
-  } catch {
-    const timedOut = controller.signal.aborted;
-    throw new ProviderError(provider, timedOut ? "PROVIDER_TIMEOUT" : "PROVIDER_NETWORK_ERROR", 502,
-      timedOut ? "O provedor demorou mais que o limite permitido." : "Não foi possível estabelecer comunicação com o provedor.");
+    const response = await fetcher(url, { signal: controller.signal, headers });
+    if (!response.ok) {
+      const code = response.status === 429 ? "PROVIDER_RATE_LIMITED" : "PROVIDER_HTTP_ERROR";
+      throw new ProviderError(provider, code, 502,
+        response.status === 429 ? "O provedor limitou as consultas. Tente novamente mais tarde." : "O provedor respondeu com erro HTTP.");
+    }
+    try {
+      return await response.json();
+    } catch {
+      if (controller.signal.aborted) {
+        throw new ProviderError(provider, "PROVIDER_TIMEOUT", 502, "O provedor demorou mais que o limite permitido.");
+      }
+      throw new ProviderError(provider, "PROVIDER_INVALID_JSON", 502, "O provedor retornou JSON inválido.");
+    }
+  } catch (error) {
+    if (error instanceof ProviderError) throw error;
+    if (controller.signal.aborted) {
+      throw new ProviderError(provider, "PROVIDER_TIMEOUT", 502, "O provedor demorou mais que o limite permitido.");
+    }
+    throw new ProviderError(provider, "PROVIDER_NETWORK_ERROR", 502,
+      "Não foi possível estabelecer comunicação com o provedor.");
   } finally {
     clearTimeout(timer);
-  }
-  if (!response.ok) {
-    const code = response.status === 429 ? "PROVIDER_RATE_LIMITED" : "PROVIDER_HTTP_ERROR";
-    throw new ProviderError(provider, code, 502,
-      response.status === 429 ? "O provedor limitou as consultas. Tente novamente mais tarde." : "O provedor respondeu com erro HTTP.");
-  }
-  try {
-    return await response.json();
-  } catch {
-    throw new ProviderError(provider, "PROVIDER_INVALID_JSON", 502, "O provedor retornou JSON inválido.");
   }
 }
 
@@ -79,7 +84,7 @@ export async function geocode(query: string, fetcher: typeof fetch = fetch, time
     throw new ProviderError("nominatim", "PROVIDER_INVALID_RESPONSE", 502, "Geocodificador retornou dados inesperados.");
   }
   const lat = Number(first.lat), lon = Number(first.lon);
-  if (typeof first.lat !== "string" || typeof first.lon !== "string" || !validCoordinate(lon, lat)) {
+  if (typeof first.lat !== "string" || typeof first.lon !== "string" || !first.lat.trim() || !first.lon.trim() || !validCoordinate(lon, lat)) {
     throw new ProviderError("nominatim", "PROVIDER_INVALID_RESPONSE", 502, "Geocodificador retornou coordenadas inválidas.");
   }
   return { lat, lon, label: typeof first.display_name === "string" ? first.display_name : query };
