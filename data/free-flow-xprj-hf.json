@@ -1,0 +1,22 @@
+{
+  "id": "xprj-hf-simao-pereira",
+  "name": "Ponto Free Flow XPRJ+HF",
+  "road": "BR-040",
+  "city": "Simão Pereira",
+  "state": "MG",
+  "plusCode": "XPRJ+HF",
+  "latitude": -22.0085625,
+  "longitude": -43.2688125,
+  "radiusMeters": 150,
+  "status": "active",
+  "verificationStatus": "pilot",
+  "source": "local pilot supplied by project owner",
+  "bypassPoints": [
+    {
+      "latitude": -22.0125625,
+      "longitude": -43.2788125,
+      "label": "Contorno piloto oeste"
+    }
+  ],
+  "notes": "Coordenada derivada do Plus Code informado pelo proprietário. Validar em campo e com fonte oficial antes de produção."
+}
