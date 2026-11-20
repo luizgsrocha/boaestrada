@@ -37,7 +37,7 @@ export default { async fetch(request: Request): Promise<Response> {
     const [origin, destination] = await Promise.all([geocode(body.origin), geocode(body.destination)]);
     if (!origin || !destination) return json({ error: "GEOCODING_FAILED", message: "Não foi possível localizar origem ou destino." }, 422);
     const calculated = await route(origin, destination);
-    if (!calculated) return json({ error: "ROUTING_FAILED", message: "Não foi possível calcular a rota." }, 502);
+    if (!calculated) return json({ status: "not_verified", message: "Não foi possível obter distância e tempo agora, mas os links de navegação estão prontos.", links: { waze: "https://waze.com/ul?ll=" + destination.lat + "," + destination.lon + "&navigate=yes", googleMaps: "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(destination.label) } });
     const destinationParam = encodeURIComponent(destination.label);
     return json({ status: "not_verified", message: body.avoid?.includes("free_flow") ? "Rota calculada, mas ainda não validada contra pórticos Free Flow oficiais." : "Rota calculada sem filtro Free Flow.", route: { metrics: { distanceKm: Math.round(calculated.distance / 10) / 100, durationMinutes: Math.round(calculated.duration / 60), geometry: calculated.geometry } }, links: { waze: "https://waze.com/ul?ll=" + destination.lat + "," + destination.lon + "&navigate=yes", googleMaps: "https://www.google.com/maps/dir/?api=1&destination=" + destinationParam } });
   }
