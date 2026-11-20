@@ -49,3 +49,24 @@ FROM ff_observations WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 Como o Worker de produção não foi modificado, não é necessário rollback de código. Para abandonar a migração, primeiro desligar quaisquer futuros bindings/ciclos de ingestão; preservar/exportar evidências antes de excluir o banco D1.
 
+
+## Segunda fase — 20/11/2026 (cadastro convencional e importador ANTT)
+
+- Migração adicional: `migrations/0002_toll_registry_evidence.sql`, com `toll_registry_observations` isolado de `ff_observations`.
+- Base complementar [Sem Parar — praças de pedágio](https://github.com/Sem-Parar/SEM-PARAR-PEDAGIOS/blob/main/dados/pracas-de-pedagio.csv), licença CC BY 4.0, com 318 registros (162 federais e 156 estaduais), carregada no D1 sob `sem_parar_tolls`. Essas coordenadas são **declaradas**, não verificadas uma a uma; classificação `conventional_claimed` vem do publicador.
+- O cruzamento exato conservador (UF, rodovia, km ± 0,015) entre o cadastro auxiliar de praças e o Free Flow não retornou sobreposição; esse resultado **não prova completude ou ausência de conflitos**.
+- `scripts/antt_registry_import.py` recebe CSV delimitado por ponto e vírgula (inclusive CP1252) ou JSON oficial da ANTT, exige campos reais `praca_de_pedagio`, `km_m`, `municipal`, `situacao`, `sentido` e normaliza latitude/longitude; gera SQL auditável sem executar gravação remota. Todos os registros oficiais são inseridos como `unclassified`; **não se convertem automaticamente em pórticos Free Flow**.
+- `tests/test_antt_registry_import.py`: quatro testes `unittest` passaram em 20/11/2026 com fixtures; sem teste de descarga real do arquivo ANTT, que continua inacessível (timeout de rede e firewall).
+- A ANTT informa que o cadastro é atualizado mensalmente; a descrição de metodologia de fontes derivadas aponta 289 registros na fotografia de 03/11/2026, **mas isso não foi confirmado por uma importação oficial própria**.
+- A etapa de importação direta do recurso `antt_open_data` permanece aberta até haver acesso ao arquivo com validação de origem e hash.
+
+### Como gerar SQL de staging da ANTT, após obter arquivo oficial
+
+```bash
+python scripts/antt_registry_import.py --input /caminho/dados-antt.json \
+  --output /tmp/antt_staging.sql --audit /tmp/antt_audit.json \
+  --updated-at 2026-11-03
+# inspecionar SQL e auditoria; aplicar SOMENTE ao D1 de staging depois de revisão
+```
+
+**Não use registros de praça convencional para provar travessia de um pórtico Free Flow nem para excluir arestas dirigidas.**
