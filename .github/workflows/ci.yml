@@ -21,3 +21,8 @@ jobs:
         run: npm run typecheck
       - name: Unit and API integration tests
         run: npm test
+      - name: Wrangler dry-run bundle (does not deploy)
+        run: npx wrangler deploy --dry-run --outdir /tmp/boaestrada-bundle
+      - name: Real Nominatim and OSRM HTTP smoke (non-blocking)
+        continue-on-error: true
+        run: node scripts/provider-smoke.mjs
