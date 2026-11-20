@@ -17,7 +17,7 @@ export async function planRoute(
   if (!crossed.length) return { status: "ok", route: direct };
   const candidates = buildBypassCandidates(crossed);
   const alternatives = await Promise.all(candidates.map((candidate) => provider([origin, ...candidate.waypoints, destination])));
-  const valid = alternatives.filter((r): r is RouteCandidate => r !== null && !routeCrossesBarriers(r.coordinates, barriers));
+  const valid = alternatives.filter((r): r is RouteCandidate => r !== null && routeCrossesBarriers(r.coordinates, barriers).length === 0);
   if (!valid.length) return { status: "no_verified_route", route: null, reason: "NO_VERIFIED_BYPASS" };
   valid.sort((a, b) => (a.distanceMeters ?? Number.MAX_SAFE_INTEGER) - (b.distanceMeters ?? Number.MAX_SAFE_INTEGER));
   return { status: "not_verified", route: valid[0], reason: "BYPASS_SELECTED_BUT_DATA_REQUIRES_OPERATIONAL_VERIFICATION" };
