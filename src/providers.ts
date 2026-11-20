@@ -120,7 +120,7 @@ export async function routeOsrm(
   origin: Point,
   destination: Point,
   fetcher: typeof fetch = fetch,
-  timeoutMs = 12000,
+  timeoutMs = 60000,
 ): Promise<OsrmRoute> {
   const url = "https://router.project-osrm.org/route/v1/driving/" +
     origin.lon + "," + origin.lat + ";" + destination.lon + "," + destination.lat +
