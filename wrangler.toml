@@ -1,0 +1,6 @@
+name = "boaestrada"
+main = "src/worker.ts"
+compatibility_date = "2026-11-20"
+
+[vars]
+APP_ENV = "development"
