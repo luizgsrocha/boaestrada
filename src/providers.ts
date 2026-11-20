@@ -12,6 +12,7 @@ export class ProviderError extends Error {
     public readonly code: string,
     public readonly httpStatus: number,
     public readonly publicMessage: string,
+    public readonly upstreamStatus?: number,
   ) {
     super(code);
     this.name = "ProviderError";
@@ -45,7 +46,7 @@ async function providerJson(
     if (!response.ok) {
       const code = response.status === 429 ? "PROVIDER_RATE_LIMITED" : "PROVIDER_HTTP_ERROR";
       throw new ProviderError(provider, code, 502,
-        response.status === 429 ? "O provedor limitou as consultas. Tente novamente mais tarde." : "O provedor respondeu com erro HTTP.");
+        response.status === 429 ? "O provedor limitou as consultas. Tente novamente mais tarde." : response.status >= 500 ? "O serviço de mapas está temporariamente indisponível. Tente novamente mais tarde." : "O serviço de mapas recusou a consulta.", response.status);
     }
     try {
       return await response.json();
