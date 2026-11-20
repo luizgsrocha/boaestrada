@@ -1,4 +1,4 @@
-import { maintenancePage } from "./maintenance-page";
+import { maintenancePage } from "./maintenance-page.js";
 import { geocode, providerDiagnostics, ProviderError, routeOsrm, validPoint } from "./providers.js";
 import type { Point } from "./providers.js";
 
