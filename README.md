@@ -17,7 +17,9 @@ O `POST /api/routes` calcula a rota original e verifica a proximidade da sua geo
 
 A resposta inclui `gantries: { count: null, candidatesCount: N, candidates: [...], coverage: "incomplete", matchingMethod: "segment_proximity" }`. `candidatesCount` é somente o número de **candidatos próximos encontrados no cadastro disponível**. `count: null` significa que o número real de pórticos atravessados **não é conhecido**, inclusive quando `candidatesCount === 0`. A página inicial mostra a contagem preliminar e nomes de candidatos sem afirmar cobrança, desvio ou economia.
 
-A integração do inventário ANTT/Sem Parar e do D1 isolado, em preparação na PR #24, permanece pendente. Não habilitar esse cadastro como evidência de pórticos ativos até revisar coordenadas, deduplicação, status, sentidos, pistas e arestas efetivamente tarifadas. Nem a heurística de raio nem a hipótese de cobrança bidirecional substituem essa validação.
+O snapshot nacional do Sem Parar foi integrado **como metadados**, não como pontos espaciais. `GET /api/gantries` aceita filtros opcionais `?uf=MG&road=BR-040`, retornando `catalog.totalRecords`, `catalog.returnedRecords`, `catalog.geolocatedRecords: 0` e `catalog.records` com a quilometragem, cidade, direção, status reportado e fonte. A cópia original fica em `data/sem-parar-porticos-free-flow.csv`, com [atribuição e licença CC BY 4.0](data/SEM-PARAR-ATTRIBUTION.md). Os registros não têm coordenadas geográficas nem correspondência com arestas de cobrança; não são somados à contagem `gantries.candidatesCount` da rota. A resposta de rota inclui `gantries.catalogCoverage` para deixar a cobertura transparente.
+
+A integração do inventário ANTT/Sem Parar **ao grafo viário** e do D1 isolado, em preparação na PR #24, permanece pendente. Não habilitar esse cadastro como evidência de pórticos ativos até revisar coordenadas, deduplicação, status, sentidos, pistas e arestas efetivamente tarifadas. Nem a heurística de raio nem a hipótese de cobrança bidirecional substituem essa validação.
 
 ## Painel de resultados
 
