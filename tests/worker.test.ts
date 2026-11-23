@@ -79,6 +79,16 @@ describe("Worker - rota principal", () => {
     expect(lab).toContain("auto-waypoint");
   });
 
+  it("mostra painel de resultados acessível com métricas e sem alegações sem prova", async () => {
+    const html = await (await worker.fetch(new Request("https://boaestrada.example/"))).text();
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain("Pórticos Free Flow evitados");
+    expect(html).toContain("Economia em Free Flow");
+    expect(html).toContain("Rota original — Free Flow não verificado");
+    expect(html).toContain("renderRoutePanel(r,j)");
+    expect(html).not.toContain('r.innerHTML="<b>"');
+  });
+
   it("mostra saúde do Worker sem confundir com provedores", async () => {
     const response = await worker.fetch(new Request("https://boaestrada.example/health"));
     expect(response.status).toBe(200);
