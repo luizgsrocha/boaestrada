@@ -51,6 +51,10 @@ jobs:
         run: |
           set -euo pipefail
           URL="https://boaestrada.lgsr96.workers.dev"
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$URL/health" | grep -q '"status":"ok"'
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$URL/" | grep -q "Versão do site:"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$URL/health" --output "$RUNNER_TEMP/boaestrada-health.json"
+          grep -q '"status":"ok"' "$RUNNER_TEMP/boaestrada-health.json"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$URL/" --output "$RUNNER_TEMP/boaestrada-home.html"
+          grep -q "Versão do site:" "$RUNNER_TEMP/boaestrada-home.html"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$URL/laboratorio-vias" --output "$RUNNER_TEMP/boaestrada-lab.html"
+          grep -q "Busca circular de vias alternativas" "$RUNNER_TEMP/boaestrada-lab.html"
           echo "Release ${GITHUB_SHA} published and verified at $URL"
