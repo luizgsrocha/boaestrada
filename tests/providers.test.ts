@@ -68,4 +68,22 @@ describe("provedores de geocodificação e roteamento", () => {
     expect(output.osrm.available).toBe(true);
     expect(output.verifiedFreeFlowAvoidance).toBe(false);
   });
+  it("identifica a aplicação no OSRM sem expor conteúdo de erro", async () => {
+    const fetcher = mock(validRoute);
+    await routeOsrm(o, d, fetcher);
+    const [, options] = (fetcher as any).mock.calls[0];
+    expect(options.headers["User-Agent"]).toContain("BoaEstrada/0.4");
+    expect(options.headers.Accept).toBe("application/json");
+  });
+
+  it("mostra apenas código e HTTP do OSRM na rota de diagnóstico", async () => {
+    const fetcher = vi.fn(async (url: string) => url.includes("nominatim")
+      ? new Response(JSON.stringify([{lat:"-21.7642",lon:"-43.3496"}]))
+      : new Response("<html>restricted</html>", { status: 403 })) as unknown as typeof fetch;
+    const output = await providerDiagnostics(fetcher);
+    expect(output.nominatim.available).toBe(true);
+    expect(output.osrm).toMatchObject({ available: false, errorCode: "PROVIDER_HTTP_ERROR", upstreamStatus: 403 });
+    expect(JSON.stringify(output)).not.toContain("restricted");
+  });
+
 });
