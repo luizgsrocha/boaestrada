@@ -15,6 +15,51 @@ const destination = { lat: -22.1167, lon: -43.2096 };
 afterEach(() => vi.unstubAllGlobals());
 
 describe("Worker - rota principal", () => {
+  it("exibe página da busca circular somente no laboratório", async () => {
+    const res=await worker.fetch(new Request("https://boaestrada.example/laboratorio-vias"));
+    expect(res.status).toBe(200);
+    const html=await res.text();
+    expect(html).toContain("Busca circular de vias alternativas");
+    expect(html).toContain("/api/lab/road-candidates");
+    expect(html).toContain("https://overpass-api.de/api/interpreter");
+    const maintenance=await (await worker.fetch(new Request("https://boaestrada.example/manutencao"))).text();
+    expect(maintenance).toContain('href="/laboratorio-vias"');
+  });
+  it("avalia grafo enviado no laboratório sem usar OSRM nem Overpass pelo Worker", async () => {
+    const p=[-43.2688125,-22.0085625];
+    const nodes=[
+      {type:"node",id:1,lon:p[0]-.005,lat:p[1]},
+      {type:"node",id:2,lon:p[0],lat:p[1]},
+      {type:"node",id:3,lon:p[0]+.005,lat:p[1]},
+      {type:"node",id:4,lon:p[0]-.005,lat:p[1]+.001},
+      {type:"node",id:5,lon:p[0],lat:p[1]+.001},
+      {type:"node",id:6,lon:p[0]+.005,lat:p[1]+.001},
+      {type:"way",id:7,nodes:[1,2,3],tags:{highway:"primary"}},
+      {type:"way",id:8,nodes:[1,4,5,6,3],tags:{highway:"residential",name:"Contorno"}},
+    ];
+    const noFetch=vi.fn();vi.stubGlobal("fetch",noFetch);
+    const res=await worker.fetch(new Request("https://boaestrada.example/api/lab/road-candidates",{
+      method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({gantryId:"xprj-hf-simao-pereira",
+        routeCoordinates:[[p[0]-.01,p[1]],[p[0]+.01,p[1]]],osmElements:nodes})
+    }));
+    expect(res.status).toBe(200);
+    const data=await res.json() as any;
+    expect(data.status).toBe("candidate_found");
+    expect(data.alternatives[0].waypoints).toHaveLength(2);
+    expect(data.validation.freeFlowAvoidanceVerified).toBe(false);
+    expect(data.experimental).toBe(true);
+    expect(noFetch).not.toHaveBeenCalled();
+  });
+  it("não aceita pórtico arbitrário nem grafos maiores que o limite", async () => {
+    const url="https://boaestrada.example/api/lab/road-candidates";
+    const invalid=await worker.fetch(new Request(url,{method:"POST",body:JSON.stringify({
+      gantryId:"desconhecido",routeCoordinates:[],osmElements:[]})}));
+    expect(invalid.status).toBe(400);
+    const oversized=await worker.fetch(new Request(url,{method:"POST",body:" ".repeat(3000001)}));
+    expect(oversized.status).toBe(413);
+  });
+
   it("retorna rota original com GeoJSON e sem alegar desvio Free Flow", async () => {
     const fetcher = vi.fn(async () => new Response(JSON.stringify(validRoute)));
     vi.stubGlobal("fetch", fetcher);

@@ -31,6 +31,14 @@ A base [Pardal](https://github.com/Murkiriel/pardal), sob licença **ODbL 1.0**,
 
 A integração do inventário ANTT/Sem Parar **ao grafo viário** e do D1 isolado, em preparação na PR #24, permanece pendente. Não habilitar esse cadastro como evidência de pórticos ativos até revisar coordenadas, deduplicação, status, sentidos, pistas e arestas efetivamente tarifadas. Nem a heurística de raio nem a hipótese de cobrança bidirecional substituem essa validação.
 
+## Laboratório de vias alternativas — círculo e perpendicular
+
+A página **`GET /laboratorio-vias`**, acessível a partir de `/manutencao`, implementa a primeira versão do experimento de busca de vias: selecionar pórtico cadastrado, obter a geometria original via `/api/routes` (ou colar um GeoJSON real quando o OSRM estiver indisponível), consultar **manualmente** a malha OSM em um círculo de 2 km por meio do Overpass diretamente no navegador (CORS), e enviar os dados ao **`POST /api/lab/road-candidates`**.
+
+O módulo puro `src/circular-road-search.ts` calcula a direção da rota junto ao pórtico e os vetores perpendiculares; examina círculos de **500 m, 1 km e 2 km**, filtra vias motorizáveis por classes básicas e acesso OSM, monta conexões por **nós compartilhados**, respeita `oneway` simples, procura um caminho entre aproximações antes e depois do pórtico evitando o trecho geométrico central da rota original e sugere **até dois waypoints sobre nós de vias reais**. O resultado informa raio, nomes de vias, distância aproximada do caminho e conectividade **apenas pelo grafo de nós**. O motor não verifica restrições de conversão (`type=restriction`), acessos de campo, pista tarifada ou desempenho do Google Maps; todo resultado permanece **experimental e não verificado**. Nada muda na API de roteamento principal, tarifas, pedágios convencionais ou status de ausência de cobrança.
+
+Regras de operação: uma única consulta Overpass por clique; sem consultas automáticas no servidor, cron ou tentativas em loop; `[timeout:12]`, raio máximo 2 km; análise recebe no máximo **3 MB**, **12 mil elementos OSM** e **2 mil vértices de rota**. A consulta pública pode falhar por 429, 504 ou CORS; sem SLA. Antes de uso amplo ou comercial é necessário cache compartilhado, quota/rate limit efetivo e infraestrutura compatível. A geometria continua dependente do OSRM público até haver um motor confiável. Dados viários © contribuidores OpenStreetMap, licença **ODbL**, [atribuição](https://www.openstreetmap.org/copyright).
+
 ## Painel de resultados
 
 A página inicial do Worker mostra distância e duração **da rota original** quando o provedor responde. Exibe também campos para número de pórticos Free Flow evitados e economia estimada, que permanecem **não verificados / não calculados** enquanto não houver desvio e tarifas comprovadamente validados. Não se apresenta o valor zero como substituto de ausência de dados.
