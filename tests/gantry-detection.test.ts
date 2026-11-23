@@ -1,8 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { detectGantryCandidates, pilotGantry } from "../src/gantry-detection.js";
+import pilot from "../data/free-flow-xprj-hf.json" with { type: "json" };
 
 const segment = [[-43.28, -22.0085625], [-43.26, -22.0085625]] as [number, number][];
 describe("detector de candidatos Free Flow sobre a rota original", () => {
+  it("mantém o catálogo embutido sincronizado com o arquivo piloto", () => {
+    expect(pilotGantry.id).toBe(pilot.id);
+    expect(pilotGantry.label).toBe(pilot.name);
+    expect(pilotGantry.road).toBe(pilot.road);
+    expect(pilotGantry.latitude).toBe(pilot.latitude);
+    expect(pilotGantry.longitude).toBe(pilot.longitude);
+    expect(pilotGantry.radiusMeters).toBe(pilot.radiusMeters);
+  });
   it("encontra um candidato no MEIO do segmento, sem vértice junto ao pórtico", () => {
     const found = detectGantryCandidates(segment);
     expect(found.candidatesCount).toBe(1);
