@@ -50,6 +50,34 @@ describe("Worker - rota principal", () => {
     expect(result.gantries.count).toBeNull();
   });
 
+  it("lista posições publicadas separadamente do catálogo sem coordenadas do Sem Parar", async () => {
+    const response=await worker.fetch(new Request("https://boaestrada.example/api/gantries?uf=MG"));
+    const data=await response.json() as any;
+    expect(response.status).toBe(200);
+    expect(data.catalog.totalRecords).toBe(84);
+    expect(data.catalog.geolocatedRecords).toBe(0);
+    expect(data.geographicCatalog.totalPositions).toBe(53);
+    expect(data.geographicCatalog.returnedPositions).toBe(7);
+    expect(data.geographicCatalog.coordinateStatus).toBe("reported_unverified");
+    expect(data.geographicCatalog.records.every((r:any)=>r.state==="MG")).toBe(true);
+  });
+  it("não associa automaticamente BR-040 do Sem Parar a coordenadas sem rodovia identificada", async () => {
+    const result=await (await worker.fetch(new Request("https://boaestrada.example/api/gantries?uf=MG&road=BR-040"))).json() as any;
+    expect(result.catalog.returnedRecords).toBe(1);
+    expect(result.geographicCatalog.returnedPositions).toBe(0);
+  });
+  it("detecta posição geográfica relatada pela ANTT sem alegar travessia nem cobrança", async () => {
+    const route={code:"Ok",routes:[{distance:5000,duration:500,geometry:{
+      type:"LineString",coordinates:[[-43.14,-19.853947],[-43.12,-19.853947]]
+    }}]};
+    vi.stubGlobal("fetch",vi.fn(async()=>new Response(JSON.stringify(route))));
+    const data=await(await post({origin,destination})).json() as any;
+    expect(data.gantries.candidates.some((c:any)=>c.label.includes("João Monlevade"))).toBe(true);
+    expect(data.gantries.candidates.find((c:any)=>c.label.includes("João Monlevade")).verificationStatus).toBe("reported");
+    expect(data.gantries.count).toBeNull();
+    expect(data.status).toBe("not_verified");
+  });
+
   it("retorna candidatos no trajeto sem alegar contagem confirmada", async () => {
     const mockRoute={code:"Ok",routes:[{distance:3000,duration:180,geometry:{
       type:"LineString",coordinates:[[-43.28,-22.0085625],[-43.26,-22.0085625]]
