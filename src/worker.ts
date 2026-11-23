@@ -1,4 +1,5 @@
 import { detectGantryCandidates, pilotGantry } from "./gantry-detection.js";
+import { semPararCatalog, SEM_PARAR_SOURCE, SEM_PARAR_LICENSE, SEM_PARAR_SOURCE_SHA } from "./semparar-catalog.js";
 import { resultPanelStyles, resultPanelScript } from "./result-panel.js";
 import { autocompleteStyles, autocompleteScript } from "./autocomplete.js";
 import { maintenancePage } from "./maintenance-page.js";
@@ -54,8 +55,25 @@ export default {
       return json({ status: "ok", service: "boaestrada", note: "Verifica apenas o Worker, não os provedores." });
     if (req.method === "GET" && url.pathname === "/api/providers/health")
       return json(await providerDiagnostics());
-    if (req.method === "GET" && url.pathname === "/api/gantries")
-      return json({ data: [{ id: pilotGantry.id, lat: pilotGantry.latitude, lon: pilotGantry.longitude, radius: pilotGantry.radiusMeters, road: pilotGantry.road, label: pilotGantry.label, verificationStatus: pilotGantry.verificationStatus }], verificationStatus: "pilot", message: "Ponto piloto aguardando validação oficial." });
+    if (req.method === "GET" && url.pathname === "/api/gantries") {
+      const uf = url.searchParams.get("uf")?.trim().toUpperCase();
+      const road = url.searchParams.get("road")?.trim().toUpperCase();
+      if ((uf && !/^[A-Z]{2}$/.test(uf)) || (road && !/^[A-Z]{2,3}-[0-9]{2,4}$/.test(road)))
+        return json({ error: "INVALID_FILTER", message: "Filtros uf ou road inválidos." }, 400);
+      const records = semPararCatalog.filter(item =>
+        (!uf || item.state === uf) && (!road || item.road.toUpperCase() === road));
+      return json({
+        data: [{ id: pilotGantry.id, lat: pilotGantry.latitude, lon: pilotGantry.longitude, radius: pilotGantry.radiusMeters, road: pilotGantry.road, label: pilotGantry.label, verificationStatus: pilotGantry.verificationStatus }],
+        verificationStatus: "pilot",
+        catalog: {
+          source: SEM_PARAR_SOURCE, license: SEM_PARAR_LICENSE, sourceSha: SEM_PARAR_SOURCE_SHA,
+          totalRecords: semPararCatalog.length, returnedRecords: records.length,
+          geolocatedRecords: 0, records,
+          note: "Cadastro informativo. Sem coordenadas de pórticos no CSV, não é possível identificar sua passagem na rota. Registros agregados não são pórticos físicos individualizados.",
+        },
+        message: "Ponto piloto aguardando validação oficial. Outros registros oriundos da base Sem Parar não têm coordenadas geográficas."
+      });
+    }
     if (req.method === "POST" && url.pathname === "/api/routes") {
       let body: unknown;
       try { body = await req.json(); }
@@ -73,7 +91,7 @@ export default {
         const origin = await resolveLocation(input.origin as Point | string);
         const destination = await resolveLocation(input.destination as Point | string);
         const direct = await routeOsrm(origin, destination);
-        const gantries = detectGantryCandidates(direct.geometry.coordinates);
+        const gantries = { ...detectGantryCandidates(direct.geometry.coordinates), catalogCoverage: { source: "Sem Parar", totalRecords: semPararCatalog.length, geolocatedRecords: 0, spatialMatchAvailable: false } };
         // O OSRM público não implementa exclusão de arestas Free Flow: nunca aplicar waypoint piloto em produção.
         return json({
           status: "not_verified",
