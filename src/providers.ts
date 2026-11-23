@@ -126,7 +126,10 @@ export async function routeOsrm(
   const url = "https://router.project-osrm.org/route/v1/driving/" +
     origin.lon + "," + origin.lat + ";" + destination.lon + "," + destination.lat +
     "?overview=full&geometries=geojson";
-  return parseOsrm(await providerJson("osrm", url, timeoutMs, fetcher));
+  return parseOsrm(await providerJson("osrm", url, timeoutMs, fetcher, {
+    Accept: "application/json",
+    "User-Agent": "BoaEstrada/0.4 (https://boaestrada.lgsr96.workers.dev/)",
+  }));
 }
 
 export async function providerDiagnostics(fetcher: typeof fetch = fetch) {
@@ -139,7 +142,8 @@ export async function providerDiagnostics(fetcher: typeof fetch = fetch) {
       return { provider, available: true, elapsedMs: Date.now() - started };
     } catch (error) {
       return { provider, available: false, elapsedMs: Date.now() - started,
-        errorCode: error instanceof ProviderError ? error.code : "PROVIDER_UNEXPECTED_ERROR" };
+        errorCode: error instanceof ProviderError ? error.code : "PROVIDER_UNEXPECTED_ERROR",
+        upstreamStatus: error instanceof ProviderError ? error.upstreamStatus ?? null : null };
     }
   };
   const [nominatim, osrm] = await Promise.all([
