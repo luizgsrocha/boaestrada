@@ -13,11 +13,21 @@ Planejador de rotas brasileiras, ainda em desenvolvimento, com pesquisa de desvi
 
 ## Identificação preliminar de pórticos na rota original
 
-O `POST /api/routes` calcula a rota original e verifica a proximidade da sua geometria com o catálogo **piloto** disponível em `data/free-flow-xprj-hf.json` (atualmente um registro sem validação oficial). A detecção usa distância entre o ponto e **cada segmento** da polyline, em vez de apenas os vértices, e elimina duplicações por ID. Não é uma prova de passagem pela aresta tarifada: pistas paralelas, viadutos e erros de localização podem gerar falsos positivos.
+O `POST /api/routes` calcula a rota original e verifica a proximidade da sua geometria com o ponto piloto de `data/free-flow-xprj-hf.json` e **53 posições geográficas candidatas, não verificadas**, derivadas de dados ANTT reproduzidos pelo Pardal. A detecção usa distância entre o ponto e **cada segmento** da polyline, em vez de apenas os vértices, e elimina duplicações por ID. Não é uma prova de passagem pela aresta tarifada: pistas paralelas, viadutos e erros de localização podem gerar falsos positivos.
 
 A resposta inclui `gantries: { count: null, candidatesCount: N, candidates: [...], coverage: "incomplete", matchingMethod: "segment_proximity" }`. `candidatesCount` é somente o número de **candidatos próximos encontrados no cadastro disponível**. `count: null` significa que o número real de pórticos atravessados **não é conhecido**, inclusive quando `candidatesCount === 0`. A página inicial mostra a contagem preliminar e nomes de candidatos sem afirmar cobrança, desvio ou economia.
 
 O snapshot nacional do Sem Parar foi integrado **como metadados**, não como pontos espaciais. `GET /api/gantries` aceita filtros opcionais `?uf=MG&road=BR-040`, retornando `catalog.totalRecords`, `catalog.returnedRecords`, `catalog.geolocatedRecords: 0` e `catalog.records` com a quilometragem, cidade, direção, status reportado e fonte. A cópia original fica em `data/sem-parar-porticos-free-flow.csv`, com [atribuição e licença CC BY 4.0](data/SEM-PARAR-ATTRIBUTION.md). Os registros não têm coordenadas geográficas nem correspondência com arestas de cobrança; não são somados à contagem `gantries.candidatesCount` da rota. A resposta de rota inclui `gantries.catalogCoverage` para deixar a cobertura transparente.
+
+### Enriquecimento geográfico experimental — posições relatadas por fonte intermediária
+
+A base [Pardal](https://github.com/Murkiriel/pardal), sob licença **ODbL 1.0**, disponibiliza CSVs por estado com coordenadas de praças de pedágio e pontos Free Flow, atribuindo parte delas à ANTT. Filtramos exclusivamente as linhas `FREE_FLOW` com `source=ANTT`: **97 linhas, agrupadas em 53 posições distintas**, com preservação dos nomes/quantidades na mesma coordenada. A origem oficial alegada pelo projeto está em [Dados de Praças da ANTT](https://dados.antt.gov.br/dataset/praca-de-pedagio); **não revalidamos essas 53 coordenadas no download oficial da ANTT**.
+
+- Base própria separada em `data/antt-position-candidates.json`, código operacional `src/geo-candidates.ts`, com [atribuição, transformações e licença ODbL](data/ANTT-POSITIONS-ATTRIBUTION.md).
+- Camada ODbL **não mesclada** ao cadastro Sem Parar CC BY 4.0; não pressupõe correspondência entre registros de quilômetro e posições sem identificação de estrada.
+- `GET /api/gantries?uf=MG` retorna `geographicCatalog` com posições e fonte; o filtro `road` **não** é aplicado à camada geográfica porque os CSVs reproduzidos não informam estrada.
+- O detector inclui as 53 posições como **candidatos** com `verificationStatus: "reported"` e o piloto separado, sem alterar `gantries.count:null`. Não há bloqueio de arestas de cobrança, tarifas, direção nem desvio automático. **O pórtico piloto P3A da BR-040 km 831 ainda não teve GPS confirmado oficialmente**.
+- Antes de usos críticos, confrontar os CSVs atuais da ANTT, concessionárias e geometria da via, além de corrigir eventuais posições aproximadas ou registros de cobrança múltiplos.
 
 A integração do inventário ANTT/Sem Parar **ao grafo viário** e do D1 isolado, em preparação na PR #24, permanece pendente. Não habilitar esse cadastro como evidência de pórticos ativos até revisar coordenadas, deduplicação, status, sentidos, pistas e arestas efetivamente tarifadas. Nem a heurística de raio nem a hipótese de cobrança bidirecional substituem essa validação.
 
