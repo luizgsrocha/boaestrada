@@ -1,4 +1,5 @@
-import pilot from "../data/free-flow-xprj-hf.json" with { type: "json" };
+// Espelho do registro piloto em data/free-flow-xprj-hf.json.
+// Wrangler v3 não aceita importação JSON com atributos; o teste garante sincronia.
 
 export interface GantryCandidate {
   id: string;
@@ -14,12 +15,12 @@ export interface GantryCandidate {
 // Cadastro disponível na produção: um único ponto piloto, sem comprovação de
 // coordenada, trecho de cobrança, operação nem pertencimento à pista.
 export const pilotGantry: GantryCandidate = {
-  id: pilot.id,
-  label: pilot.name,
-  road: pilot.road,
-  latitude: pilot.latitude,
-  longitude: pilot.longitude,
-  radiusMeters: pilot.radiusMeters,
+  id: "xprj-hf-simao-pereira",
+  label: "Ponto Free Flow XPRJ+HF",
+  road: "BR-040",
+  latitude: -22.0085625,
+  longitude: -43.2688125,
+  radiusMeters: 150,
   verificationStatus: "pilot",
   operatingStatus: "unknown",
 };
