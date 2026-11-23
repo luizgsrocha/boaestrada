@@ -11,6 +11,12 @@ Planejador de rotas brasileiras, ainda em desenvolvimento, com pesquisa de desvi
 - `GET /health` verifica apenas a execução do Worker; `GET /api/providers/health` faz consultas limitadas de diagnóstico a Nominatim e OSRM, retornando disponibilidade e códigos públicos de erro.
 - O HTML `public/index.html` é uma página alternativa legada; a homepage servida pelo Worker está embutida em `src/worker.ts`. Não considerar HTML estático como fonte da interface em produção.
 
+## Painel de resultados
+
+A página inicial do Worker mostra distância e duração **da rota original** quando o provedor responde. Exibe também campos para número de pórticos Free Flow evitados e economia estimada, que permanecem **não verificados / não calculados** enquanto não houver desvio e tarifas comprovadamente validados. Não se apresenta o valor zero como substituto de ausência de dados.
+
+Se um futuro motor de rotas retornar `status: "verified"` e `validation.freeFlowAvoidance: true`, o painel só poderá apresentar quantidades informadas em `comparison.avoidedGantries` com `comparison.gantriesVerified: true`. Para valores financeiros exige também `comparison.tariffsVerified: true` e `comparison.savingsBRL` não negativo. Campos opcionais `comparison.extraDistanceKm` e `comparison.extraMinutes` serão mostrados apenas com rota verificada. **O backend atual não fornece esses campos de comparação.** A falha do OSRM mantém a mensagem de erro e o link para uma rota comum no Google Maps, sem garantia de evitar Free Flow.
+
 ## Desenvolvimento e testes
 
 ```bash
