@@ -52,7 +52,7 @@ export interface CandidateMatch {
   road: string;
   location: { lat: number; lon: number };
   distanceFromRouteMeters: number;
-  verificationStatus: "pilot" | "verified";
+  verificationStatus: "pilot" | "reported" | "verified";
   detection: "segment_proximity";
   source?: string;
   sourceLicense?: string;
