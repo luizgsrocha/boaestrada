@@ -30,6 +30,27 @@ describe("Worker - rota principal", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
+  it("retorna candidatos no trajeto sem alegar contagem confirmada", async () => {
+    const mockRoute={code:"Ok",routes:[{distance:3000,duration:180,geometry:{
+      type:"LineString",coordinates:[[-43.28,-22.0085625],[-43.26,-22.0085625]]
+    }}]};
+    vi.stubGlobal("fetch", vi.fn(async()=>new Response(JSON.stringify(mockRoute))));
+    const result=await (await post({origin,destination,avoid:["free_flow"]})).json() as any;
+    expect(result.gantries.candidatesCount).toBe(1);
+    expect(result.gantries.candidates[0].id).toBe("xprj-hf-simao-pereira");
+    expect(result.gantries.count).toBeNull();
+    expect(result.gantries.coverage).toBe("incomplete");
+    expect(result.validation.freeFlowAvoidance).toBe(false);
+    expect(result.route.waypoints).toEqual([]);
+  });
+
+  it("responde com zero candidatos conhecidos mas sem afirmar zero pórticos reais", async () => {
+    vi.stubGlobal("fetch", vi.fn(async()=>new Response(JSON.stringify(validRoute))));
+    const result=await (await post({origin,destination})).json() as any;
+    expect(result.gantries.candidatesCount).toBe(0);
+    expect(result.gantries.count).toBeNull();
+  });
+
   it("consulta Nominatim com nomes e depois OSRM", async () => {
     const fetcher = vi.fn(async (url: string) => {
       if (url.includes("nominatim")) {
