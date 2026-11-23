@@ -1,4 +1,6 @@
 import { detectGantryCandidates, pilotGantry, routeGantryCandidateCatalog } from "./gantry-detection.js";
+import { findCircularRoadCandidates, type OsmElement, type LonLat } from "./circular-road-search.js";
+import { roadLabPage } from "./road-lab-page.js";
 import { geographicCandidates, GEO_SOURCE, GEO_LICENSE, GEO_SOURCE_REPORTED_PRIMARY } from "./geo-candidates.js";
 import { semPararCatalog, SEM_PARAR_SOURCE, SEM_PARAR_LICENSE, SEM_PARAR_SOURCE_SHA } from "./semparar-catalog.js";
 import { resultPanelStyles, resultPanelScript } from "./result-panel.js";
@@ -50,6 +52,8 @@ export default {
     const url = new URL(req.url);
     if (req.method === "GET" && url.pathname === "/")
       return new Response(page, { headers: { "content-type": "text/html;charset=utf-8" } });
+    if (req.method === "GET" && url.pathname === "/laboratorio-vias")
+      return new Response(roadLabPage, { headers: { "content-type": "text/html;charset=utf-8", "cache-control": "no-store" } });
     if (req.method === "GET" && url.pathname === "/manutencao")
       return new Response(maintenancePage, { headers: { "content-type": "text/html;charset=utf-8", "cache-control": "no-store" } });
     if (req.method === "GET" && url.pathname === "/health")
@@ -76,6 +80,36 @@ export default {
         },
         message: "Ponto piloto aguardando validação oficial. Outros registros oriundos da base Sem Parar não têm coordenadas geográficas."
       });
+    }
+    if (req.method === "POST" && url.pathname === "/api/lab/road-candidates") {
+      // Apenas dados OSM enviados manualmente pelo navegador: Worker não atua
+      // como proxy aberto do Overpass e não dispara chamadas automáticas.
+      let raw: string;
+      try { raw = await req.text(); }
+      catch { return json({ error:"INVALID_LAB_INPUT", message:"Não foi possível ler a análise." },400); }
+      if (raw.length > 3000000)
+        return json({ error:"LAB_INPUT_TOO_LARGE", message:"Rede OSM acima do limite de 3 MB." },413);
+      let body: unknown;
+      try { body = JSON.parse(raw); }
+      catch { return json({error:"INVALID_JSON",message:"JSON inválido."},400); }
+      if (!body || typeof body !== "object" || Array.isArray(body))
+        return json({error:"INVALID_LAB_INPUT",message:"Dados de análise inválidos."},400);
+      const data=body as Record<string,unknown>;
+      if (typeof data.gantryId !== "string")
+        return json({error:"INVALID_GANTRY",message:"Informe um pórtico cadastrado."},400);
+      const gantry=routeGantryCandidateCatalog.find(x=>x.id===data.gantryId);
+      if (!gantry) return json({error:"INVALID_GANTRY",message:"Pórtico não cadastrado."},400);
+      try {
+        const result=findCircularRoadCandidates({
+          gantry:{id:gantry.id,latitude:gantry.latitude,longitude:gantry.longitude},
+          routeCoordinates:data.routeCoordinates as LonLat[],
+          osmElements:data.osmElements as OsmElement[],
+        });
+        return json({...result,source:"OpenStreetMap",sourceLicense:"https://www.openstreetmap.org/copyright",
+          experimental:true,gantryVerification:gantry.verificationStatus});
+      } catch {
+        return json({error:"INVALID_LAB_INPUT",message:"Geometria ou rede OSM inválida."},400);
+      }
     }
     if (req.method === "POST" && url.pathname === "/api/routes") {
       let body: unknown;
