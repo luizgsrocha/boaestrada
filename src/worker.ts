@@ -1,4 +1,5 @@
-import { detectGantryCandidates, pilotGantry } from "./gantry-detection.js";
+import { detectGantryCandidates, pilotGantry, routeGantryCandidateCatalog } from "./gantry-detection.js";
+import { geographicCandidates, GEO_SOURCE, GEO_LICENSE, GEO_SOURCE_REPORTED_PRIMARY } from "./geo-candidates.js";
 import { semPararCatalog, SEM_PARAR_SOURCE, SEM_PARAR_LICENSE, SEM_PARAR_SOURCE_SHA } from "./semparar-catalog.js";
 import { resultPanelStyles, resultPanelScript } from "./result-panel.js";
 import { autocompleteStyles, autocompleteScript } from "./autocomplete.js";
@@ -62,7 +63,9 @@ export default {
         return json({ error: "INVALID_FILTER", message: "Filtros uf ou road inválidos." }, 400);
       const records = semPararCatalog.filter(item =>
         (!uf || item.state === uf) && (!road || item.road.toUpperCase() === road));
+      const geo = geographicCandidates.filter(item => !uf || item.state === uf);
       return json({
+        geographicCatalog: {source:GEO_SOURCE,reportedPrimarySource:GEO_SOURCE_REPORTED_PRIMARY,license:GEO_LICENSE,totalPositions:geographicCandidates.length,returnedPositions:road ? 0 : geo.length,coordinateStatus:"reported_unverified",records:road ? [] : geo,note:"Posições geográficas derivadas de fonte intermediária, sem rodovia/quilômetro associado e sem validação independente. Filtro road não pode ser aplicado sem dados de rodovia."},
         data: [{ id: pilotGantry.id, lat: pilotGantry.latitude, lon: pilotGantry.longitude, radius: pilotGantry.radiusMeters, road: pilotGantry.road, label: pilotGantry.label, verificationStatus: pilotGantry.verificationStatus }],
         verificationStatus: "pilot",
         catalog: {
@@ -91,7 +94,7 @@ export default {
         const origin = await resolveLocation(input.origin as Point | string);
         const destination = await resolveLocation(input.destination as Point | string);
         const direct = await routeOsrm(origin, destination);
-        const gantries = { ...detectGantryCandidates(direct.geometry.coordinates), catalogCoverage: { source: "Sem Parar", totalRecords: semPararCatalog.length, geolocatedRecords: 0, spatialMatchAvailable: false } };
+        const gantries = { ...detectGantryCandidates(direct.geometry.coordinates), catalogCoverage: { source: "Sem Parar", totalRecords: semPararCatalog.length, geolocatedRecords: 0, spatialMatchAvailable: false, geographicCandidatePositions: geographicCandidates.length, totalCandidatePositions: routeGantryCandidateCatalog.length, geographicCandidateSource: GEO_SOURCE, geographicLicense: GEO_LICENSE } };
         // O OSRM público não implementa exclusão de arestas Free Flow: nunca aplicar waypoint piloto em produção.
         return json({
           status: "not_verified",
