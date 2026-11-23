@@ -84,4 +84,12 @@ describe("Worker - rota principal", () => {
     expect(response.status).toBe(200);
     expect((await response.json() as any).note).toContain("Worker");
   });
+  it("oferece alternativa sem afirmar desvio do Free Flow quando o provedor falha", async () => {
+    const html = await (await worker.fetch(new Request("https://boaestrada.example/"))).text();
+    expect(html).toContain("Abrir rota comum no Google Maps");
+    expect(html).toContain("NÃO garante evitar pedágios Free Flow");
+    expect(html).toContain("encodeURIComponent(o.value.trim())");
+    expect(html).toContain('link.rel="noopener noreferrer"');
+  });
+
 });
