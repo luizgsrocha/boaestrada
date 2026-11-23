@@ -1,10 +1,11 @@
+import { detectGantryCandidates, pilotGantry } from "./gantry-detection.js";
 import { resultPanelStyles, resultPanelScript } from "./result-panel.js";
 import { autocompleteStyles, autocompleteScript } from "./autocomplete.js";
 import { maintenancePage } from "./maintenance-page.js";
 import { geocode, providerDiagnostics, ProviderError, routeOsrm, validPoint } from "./providers.js";
 import type { Point } from "./providers.js";
 
-const BARRIER = { lat: -22.0085625, lon: -43.2688125, radius: 150, label: "XPRJ+HF Simão Pereira, MG" };
+
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { "content-type": "application/json;charset=utf-8", "cache-control": "no-store" },
 });
@@ -54,7 +55,7 @@ export default {
     if (req.method === "GET" && url.pathname === "/api/providers/health")
       return json(await providerDiagnostics());
     if (req.method === "GET" && url.pathname === "/api/gantries")
-      return json({ data: [BARRIER], verificationStatus: "pilot", message: "Ponto piloto aguardando validação oficial." });
+      return json({ data: [{ id: pilotGantry.id, lat: pilotGantry.latitude, lon: pilotGantry.longitude, radius: pilotGantry.radiusMeters, road: pilotGantry.road, label: pilotGantry.label, verificationStatus: pilotGantry.verificationStatus }], verificationStatus: "pilot", message: "Ponto piloto aguardando validação oficial." });
     if (req.method === "POST" && url.pathname === "/api/routes") {
       let body: unknown;
       try { body = await req.json(); }
@@ -72,6 +73,7 @@ export default {
         const origin = await resolveLocation(input.origin as Point | string);
         const destination = await resolveLocation(input.destination as Point | string);
         const direct = await routeOsrm(origin, destination);
+        const gantries = detectGantryCandidates(direct.geometry.coordinates);
         // O OSRM público não implementa exclusão de arestas Free Flow: nunca aplicar waypoint piloto em produção.
         return json({
           status: "not_verified",
@@ -81,11 +83,12 @@ export default {
           destination: { lat: destination.lat, lon: destination.lon },
           route: {
             waypoints: [],
-            barrier: BARRIER.label,
+            barrier: pilotGantry.label,
             geometry: direct.geometry,
             metrics: { distanceKm: Math.round(direct.distance / 10) / 100,
               durationMinutes: Math.round(direct.duration / 60) },
           },
+          gantries,
           links: { googleMaps: google(origin, destination) },
           validation: { freeFlowAvoidance: false, gantryCoordinateVerified: false, conventionalTollsExcluded: false },
         });
