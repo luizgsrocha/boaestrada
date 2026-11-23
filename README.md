@@ -11,6 +11,14 @@ Planejador de rotas brasileiras, ainda em desenvolvimento, com pesquisa de desvi
 - `GET /health` verifica apenas a execução do Worker; `GET /api/providers/health` faz consultas limitadas de diagnóstico a Nominatim e OSRM, retornando disponibilidade e códigos públicos de erro.
 - O HTML `public/index.html` é uma página alternativa legada; a homepage servida pelo Worker está embutida em `src/worker.ts`. Não considerar HTML estático como fonte da interface em produção.
 
+## Identificação preliminar de pórticos na rota original
+
+O `POST /api/routes` calcula a rota original e verifica a proximidade da sua geometria com o catálogo **piloto** disponível em `data/free-flow-xprj-hf.json` (atualmente um registro sem validação oficial). A detecção usa distância entre o ponto e **cada segmento** da polyline, em vez de apenas os vértices, e elimina duplicações por ID. Não é uma prova de passagem pela aresta tarifada: pistas paralelas, viadutos e erros de localização podem gerar falsos positivos.
+
+A resposta inclui `gantries: { count: null, candidatesCount: N, candidates: [...], coverage: "incomplete", matchingMethod: "segment_proximity" }`. `candidatesCount` é somente o número de **candidatos próximos encontrados no cadastro disponível**. `count: null` significa que o número real de pórticos atravessados **não é conhecido**, inclusive quando `candidatesCount === 0`. A página inicial mostra a contagem preliminar e nomes de candidatos sem afirmar cobrança, desvio ou economia.
+
+A integração do inventário ANTT/Sem Parar e do D1 isolado, em preparação na PR #24, permanece pendente. Não habilitar esse cadastro como evidência de pórticos ativos até revisar coordenadas, deduplicação, status, sentidos, pistas e arestas efetivamente tarifadas. Nem a heurística de raio nem a hipótese de cobrança bidirecional substituem essa validação.
+
 ## Painel de resultados
 
 A página inicial do Worker mostra distância e duração **da rota original** quando o provedor responde. Exibe também campos para número de pórticos Free Flow evitados e economia estimada, que permanecem **não verificados / não calculados** enquanto não houver desvio e tarifas comprovadamente validados. Não se apresenta o valor zero como substituto de ausência de dados.
