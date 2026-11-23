@@ -43,7 +43,7 @@ describe("Painel de resultados", () => {
       ]},
     });
     expect(content).toContain("Pórticos próximos (candidatos)");
-    expect(content).toContain("Cadastro piloto incompleto");
+    expect(content).toContain("Cadastro geográfico incompleto");
     expect(content).toContain("Simão Pereira");
     expect(content).toContain("não verificado");
     expect(content).toContain("Pórticos Free Flow evitados");

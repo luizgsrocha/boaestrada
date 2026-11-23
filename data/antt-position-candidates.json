@@ -1,0 +1,740 @@
+{
+  "description": "Posições candidatas derivadas de registros ANTT reproduzidos pelo Pardal. Não são pórticos oficiais verificados nem representam necessariamente a passagem tarifada.",
+  "source": "https://github.com/Murkiriel/pardal",
+  "reportedPrimarySource": "https://dados.antt.gov.br/dataset/praca-de-pedagio",
+  "license": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "files": [
+    {
+      "uf": "MG",
+      "sha": "5ad56ef0603fdf04e50b2a72a5ef46e30c11ac3a",
+      "path": "estados/MG/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/MG/pedagios.csv"
+    },
+    {
+      "uf": "RJ",
+      "sha": "82d5b603da466268493ee5ca9c14095b04dd3805",
+      "path": "estados/RJ/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/RJ/pedagios.csv"
+    },
+    {
+      "uf": "SP",
+      "sha": "2ef7620a1eff7a05dce8e71b5f2c3aaa6fdf8fad",
+      "path": "estados/SP/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/SP/pedagios.csv"
+    },
+    {
+      "uf": "PR",
+      "sha": "53a43931589bf1e98c63c019344a169f572dc1bc",
+      "path": "estados/PR/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/PR/pedagios.csv"
+    },
+    {
+      "uf": "GO",
+      "sha": "3c7f5b1f4d1837914e2674074eeec8a529406b53",
+      "path": "estados/GO/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/GO/pedagios.csv"
+    },
+    {
+      "uf": "RO",
+      "sha": "4fd2fbedf35d6e0c5b9d4d3578085fcdf3526b3d",
+      "path": "estados/RO/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/RO/pedagios.csv"
+    },
+    {
+      "uf": "RS",
+      "sha": "86f46532a0d22f385b8a07001b28cc6ff839a614",
+      "path": "estados/RS/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/RS/pedagios.csv"
+    },
+    {
+      "uf": "MT",
+      "sha": "383e7915b7d4d6e8ba1d95635d0024b766a87a92",
+      "path": "estados/MT/pedagios.csv",
+      "url": "https://github.com/Murkiriel/pardal/blob/main/estados/MT/pedagios.csv"
+    }
+  ],
+  "rawRecords": 97,
+  "distinctPositions": 53,
+  "positions": [
+    {
+      "id": "antt-report-mg-19p853947-43p132689",
+      "state": "MG",
+      "latitude": -19.853947,
+      "longitude": -43.132689,
+      "labels": [
+        "Free Flow João Monlevade - P02"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p812626-45p103461",
+      "state": "MG",
+      "latitude": -19.812626,
+      "longitude": -45.103461,
+      "labels": [
+        "Praça 02 - Nova Serrana - Free Flow"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p743897-43p615283",
+      "state": "MG",
+      "latitude": -19.743897,
+      "longitude": -43.615283,
+      "labels": [
+        "Free Flow Caeté - P01"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p609967-42p766233",
+      "state": "MG",
+      "latitude": -19.609967,
+      "longitude": -42.766233,
+      "labels": [
+        "Free Flow Jaguaraçú - P03"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p550270-46p850368",
+      "state": "MG",
+      "latitude": -19.55027,
+      "longitude": -46.850368,
+      "labels": [
+        "Praça 05 - Ibiá - Free Flow"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p348242-42p433175",
+      "state": "MG",
+      "latitude": -19.348242,
+      "longitude": -42.433175,
+      "labels": [
+        "Free Flow Belo Oriente - P04"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mg-19p028744-42p147708",
+      "state": "MG",
+      "latitude": -19.028744,
+      "longitude": -42.147708,
+      "labels": [
+        "Free Flow Governador Valadares - P05"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MG/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-rj-23p050000-44p580000",
+      "state": "RJ",
+      "latitude": -23.05,
+      "longitude": -44.58,
+      "labels": [
+        "Free Flow Paraty"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RJ/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-rj-23p006320-44p099135",
+      "state": "RJ",
+      "latitude": -23.00632,
+      "longitude": -44.099135,
+      "labels": [
+        "Free Flow Mangaratiba"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RJ/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-rj-22p910000-43p890000",
+      "state": "RJ",
+      "latitude": -22.91,
+      "longitude": -43.89,
+      "labels": [
+        "Free Flow Itaguaí"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RJ/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p526095-46p588329",
+      "state": "SP",
+      "latitude": -23.526095,
+      "longitude": -46.588329,
+      "labels": [
+        "Free Flow PFE005 - BAIRRO Norte",
+        "Free Flow PFE005 - PEDARD Norte",
+        "Free Flow PFE005 - PEDARU Norte",
+        "Free Flow PFE005 - PFS006 Norte",
+        "Free Flow PFE005 - PFS007 Norte",
+        "Free Flow PFE005 - PFS008 Norte",
+        "Free Flow PFE005 - PFS009 Norte",
+        "Free Flow PFE005 - PFS010 Norte"
+      ],
+      "sourceRecords": 8,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p509260-46p572718",
+      "state": "SP",
+      "latitude": -23.50926,
+      "longitude": -46.572718,
+      "labels": [
+        "Free Flow PFE006 - BAIRRO Norte",
+        "Free Flow PFE006 - PEDARD Norte",
+        "Free Flow PFE006 - PEDARU Norte",
+        "Free Flow PFE006 - PFS006 Norte",
+        "Free Flow PFE006 - PFS007 Norte",
+        "Free Flow PFE006 - PFS008 Norte",
+        "Free Flow PFE006 - PFS009 Norte",
+        "Free Flow PFE006 - PFS010 Norte"
+      ],
+      "sourceRecords": 8,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p497507-46p560039",
+      "state": "SP",
+      "latitude": -23.497507,
+      "longitude": -46.560039,
+      "labels": [
+        "Free Flow PFE004 - PFS003 Sul",
+        "Free Flow PFE004 - PFS004 Sul",
+        "Free Flow PFE004 - PFS005 Sul"
+      ],
+      "sourceRecords": 3,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p484416-46p539191",
+      "state": "SP",
+      "latitude": -23.484416,
+      "longitude": -46.539191,
+      "labels": [
+        "Free Flow PFE003 - PFS002 Sul",
+        "Free Flow PFE003 - PFS003 Sul",
+        "Free Flow PFE003 - PFS004 Sul",
+        "Free Flow PFE003 - PFS005 Sul"
+      ],
+      "sourceRecords": 4,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p479177-46p530417",
+      "state": "SP",
+      "latitude": -23.479177,
+      "longitude": -46.530417,
+      "labels": [
+        "Free Flow PFE007 - BAIRRO Norte",
+        "Free Flow PFE007 - PEDARD Norte",
+        "Free Flow PFE007 - PEDARU Norte",
+        "Free Flow PFE007 - PFS008 Norte",
+        "Free Flow PFE007 - PFS009 Norte",
+        "Free Flow PFE007 - PFS010 Norte"
+      ],
+      "sourceRecords": 6,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p463679-46p495578",
+      "state": "SP",
+      "latitude": -23.463679,
+      "longitude": -46.495578,
+      "labels": [
+        "Free Flow PFE002 - PFS002 Sul",
+        "Free Flow PFE002 - PFS003 Sul",
+        "Free Flow PFE002 - PFS004 Sul",
+        "Free Flow PFE002 - PFS005 Sul"
+      ],
+      "sourceRecords": 4,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p444910-46p449184",
+      "state": "SP",
+      "latitude": -23.44491,
+      "longitude": -46.449184,
+      "labels": [
+        "Free Flow PFE008 - BAIRRO Norte",
+        "Free Flow PFE008 - PEDARD Norte",
+        "Free Flow PFE008 - PEDARU Norte",
+        "Free Flow PFE008 - PFS010 Norte"
+      ],
+      "sourceRecords": 4,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p435120-46p426737",
+      "state": "SP",
+      "latitude": -23.43512,
+      "longitude": -46.426737,
+      "labels": [
+        "Free Flow PFE001 - PFS001 Sul",
+        "Free Flow PFE001 - PFS002 Sul",
+        "Free Flow PFE001 - PFS003 Sul",
+        "Free Flow PFE001 - PFS004 Sul",
+        "Free Flow PFE001 - PFS005 Sul"
+      ],
+      "sourceRecords": 5,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p429571-46p412718",
+      "state": "SP",
+      "latitude": -23.429571,
+      "longitude": -46.412718,
+      "labels": [
+        "Free Flow PFE009 - BAIRRO Norte",
+        "Free Flow PFE009 - PEDARD Norte",
+        "Free Flow PFE009 - PEDARU Norte",
+        "Free Flow PFE009 - PFS010 Norte"
+      ],
+      "sourceRecords": 4,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-sp-23p417379-46p376470",
+      "state": "SP",
+      "latitude": -23.417379,
+      "longitude": -46.37647,
+      "labels": [
+        "Free Flow PPF001 Sul - PFS001 Sul",
+        "Free Flow PPF001 Sul - PFS002 Sul",
+        "Free Flow PPF001 Sul - PFS003 Sul",
+        "Free Flow PPF001 Sul - PFS004 Sul",
+        "Free Flow PPF001 Sul - PFS005 Sul"
+      ],
+      "sourceRecords": 5,
+      "sourceFile": "estados/SP/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p905773-51p199273",
+      "state": "PR",
+      "latitude": -23.905773,
+      "longitude": -51.199273,
+      "labels": [
+        "FREE FLOW P2 MAUÁ DA SERRA"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p889283-51p183664",
+      "state": "PR",
+      "latitude": -23.889283,
+      "longitude": -51.183664,
+      "labels": [
+        "FREE FLOW P7 LONDRINA"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p686498-52p141319",
+      "state": "PR",
+      "latitude": -23.686498,
+      "longitude": -52.141319,
+      "labels": [
+        "PE01 - Floresta \"Free Flow\""
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p675859-52p118040",
+      "state": "PR",
+      "latitude": -23.675859,
+      "longitude": -52.11804,
+      "labels": [
+        "PE02 - Floresta \"Free Flow\""
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p500056-51p764972",
+      "state": "PR",
+      "latitude": -23.500056,
+      "longitude": -51.764972,
+      "labels": [
+        "Free Flow Marialva_",
+        "Free Flow Marialva - Decrescente_"
+      ],
+      "sourceRecords": 2,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p355625-51p393128",
+      "state": "PR",
+      "latitude": -23.355625,
+      "longitude": -51.393128,
+      "labels": [
+        "Free Flow Rolândia - Decrescente_"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p350800-51p387389",
+      "state": "PR",
+      "latitude": -23.3508,
+      "longitude": -51.387389,
+      "labels": [
+        "Free Flow Rolândia - Decrescente_",
+        "Free Flow Rolândia_"
+      ],
+      "sourceRecords": 2,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p285167-52p146114",
+      "state": "PR",
+      "latitude": -23.285167,
+      "longitude": -52.146114,
+      "labels": [
+        "Free Flow Pres. Castelo Branco - Decrescente_",
+        "Free Flow Pres. Castelo Branco_"
+      ],
+      "sourceRecords": 2,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p283136-50p955264",
+      "state": "PR",
+      "latitude": -23.283136,
+      "longitude": -50.955264,
+      "labels": [
+        "Free Flow Jataizinho_"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-pr-23p280717-50p958419",
+      "state": "PR",
+      "latitude": -23.280717,
+      "longitude": -50.958419,
+      "labels": [
+        "Free Flow Jataizinho - Decrescente_"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/PR/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-18p276646-49p631116",
+      "state": "GO",
+      "latitude": -18.276646,
+      "longitude": -49.631116,
+      "labels": [
+        "Free Flow Bom Jesus de Goiás - P07"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-18p114585-50p039087",
+      "state": "GO",
+      "latitude": -18.114585,
+      "longitude": -50.039087,
+      "labels": [
+        "Free Flow Bom Jesus de Goiás - P06"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p944974-50p517476",
+      "state": "GO",
+      "latitude": -17.944974,
+      "longitude": -50.517476,
+      "labels": [
+        "Free Flow Santa Helena de Goiás - P05"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p837928-51p424461",
+      "state": "GO",
+      "latitude": -17.837928,
+      "longitude": -51.424461,
+      "labels": [
+        "Free Flow 01 - Jataí"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p674806-52p215694",
+      "state": "GO",
+      "latitude": -17.674806,
+      "longitude": -52.215694,
+      "labels": [
+        "Free Flow 02 - Mineiros"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p542722-50p508903",
+      "state": "GO",
+      "latitude": -17.542722,
+      "longitude": -50.508903,
+      "labels": [
+        "Free Flow Acreuna - P04A"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p542600-50p508200",
+      "state": "GO",
+      "latitude": -17.5426,
+      "longitude": -50.5082,
+      "labels": [
+        "Free Flow Acreuna - P04B"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p387030-52p817440",
+      "state": "GO",
+      "latitude": -17.38703,
+      "longitude": -52.81744,
+      "labels": [
+        "Free Flow 03 - Portelândia"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p263997-50p229512",
+      "state": "GO",
+      "latitude": -17.263997,
+      "longitude": -50.229512,
+      "labels": [
+        "Free Flow Jandaia - P03A"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p263889-50p229722",
+      "state": "GO",
+      "latitude": -17.263889,
+      "longitude": -50.229722,
+      "labels": [
+        "Free Flow Jandaia - P03B"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p082876-49p837071",
+      "state": "GO",
+      "latitude": -17.082876,
+      "longitude": -49.837071,
+      "labels": [
+        "Free Flow Indiara - P02A"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-17p082695-49p837551",
+      "state": "GO",
+      "latitude": -17.082695,
+      "longitude": -49.837551,
+      "labels": [
+        "Free Flow Indiara - P02B"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-16p792644-49p505717",
+      "state": "GO",
+      "latitude": -16.792644,
+      "longitude": -49.505717,
+      "labels": [
+        "Free Flow Abadia de Goiás - P01B"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-go-16p747265-49p422998",
+      "state": "GO",
+      "latitude": -16.747265,
+      "longitude": -49.422998,
+      "labels": [
+        "Free Flow Abadia de Goiás - P01A"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/GO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-12p110803-60p746925",
+      "state": "RO",
+      "latitude": -12.110803,
+      "longitude": -60.746925,
+      "labels": [
+        "Free Flow Pimenta Bueno2 - P07"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-11p527534-61p333997",
+      "state": "RO",
+      "latitude": -11.527534,
+      "longitude": -61.333997,
+      "labels": [
+        "Free Flow Pimenta Bueno1 - P06"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-11p384193-61p735660",
+      "state": "RO",
+      "latitude": -11.384193,
+      "longitude": -61.73566,
+      "labels": [
+        "Free Flow Pres. Médici - P05"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-10p608100-62p339500",
+      "state": "RO",
+      "latitude": -10.6081,
+      "longitude": -62.3395,
+      "labels": [
+        "Free Flow Ouro Preto  - P04"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-10p287172-62p670764",
+      "state": "RO",
+      "latitude": -10.287172,
+      "longitude": -62.670764,
+      "labels": [
+        "Free Flow Jarú -  P03"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-9p539700-63p076700",
+      "state": "RO",
+      "latitude": -9.5397,
+      "longitude": -63.0767,
+      "labels": [
+        "Free Flow Itapuã - P02"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-ro-8p792398-63p650532",
+      "state": "RO",
+      "latitude": -8.792398,
+      "longitude": -63.650532,
+      "labels": [
+        "Free Flow Candeias - P01"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/RO/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mt-16p995780-53p504000",
+      "state": "MT",
+      "latitude": -16.99578,
+      "longitude": -53.504,
+      "labels": [
+        "Free Flow 04 - Alto Garças"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MT/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    },
+    {
+      "id": "antt-report-mt-16p848028-53p929222",
+      "state": "MT",
+      "latitude": -16.848028,
+      "longitude": -53.929222,
+      "labels": [
+        "Free Flow 05 - Pedra Preta"
+      ],
+      "sourceRecords": 1,
+      "sourceFile": "estados/MT/pedagios.csv",
+      "coordinateStatus": "reported_unverified"
+    }
+  ]
+}

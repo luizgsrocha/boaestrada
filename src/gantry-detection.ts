@@ -1,3 +1,5 @@
+import { geographicCandidates, GEO_SOURCE, GEO_LICENSE } from "./geo-candidates.js";
+
 // Espelho do registro piloto em data/free-flow-xprj-hf.json.
 // Wrangler v3 não aceita importação JSON com atributos; o teste garante sincronia.
 
@@ -8,8 +10,10 @@ export interface GantryCandidate {
   latitude: number;
   longitude: number;
   radiusMeters: number;
-  verificationStatus: "pilot" | "verified";
+  verificationStatus: "pilot" | "reported" | "verified";
   operatingStatus: "unknown" | "active" | "inactive";
+  source?: string;
+  sourceLicense?: string;
 }
 
 // Cadastro disponível na produção: um único ponto piloto, sem comprovação de
@@ -25,6 +29,22 @@ export const pilotGantry: GantryCandidate = {
   operatingStatus: "unknown",
 };
 
+// As posições da ANTT são relatadas por um repositório intermediário; só
+// podem gerar candidatos, jamais declarar rota tarifada ou sem cobrança.
+export const geographicGantryCandidates: readonly GantryCandidate[] = geographicCandidates.map(item=>({
+  id: item.id,
+  label: item.labels[0] ?? "Ponto Free Flow",
+  road: "Rodovia não verificada",
+  latitude: item.latitude,
+  longitude: item.longitude,
+  radiusMeters: 150,
+  verificationStatus: "reported",
+  operatingStatus: "unknown",
+  source: GEO_SOURCE,
+  sourceLicense: GEO_LICENSE,
+}));
+export const routeGantryCandidateCatalog: readonly GantryCandidate[] = [pilotGantry, ...geographicGantryCandidates];
+
 type Coordinate = [number, number]; // [longitude, latitude]
 export interface CandidateMatch {
   id: string;
@@ -32,8 +52,10 @@ export interface CandidateMatch {
   road: string;
   location: { lat: number; lon: number };
   distanceFromRouteMeters: number;
-  verificationStatus: "pilot" | "verified";
+  verificationStatus: "pilot" | "reported" | "verified";
   detection: "segment_proximity";
+  source?: string;
+  sourceLicense?: string;
 }
 export interface GantryDetection {
   count: null; // Sem arestas tarifadas e inventário completo, o número real é desconhecido.
@@ -73,7 +95,7 @@ function distanceToSegmentMeters(p: Coordinate, a: Coordinate, b: Coordinate): n
 
 export function detectGantryCandidates(
   coordinates: Coordinate[],
-  catalog: readonly GantryCandidate[] = [pilotGantry],
+  catalog: readonly GantryCandidate[] = routeGantryCandidateCatalog,
 ): GantryDetection {
   const candidates: CandidateMatch[] = [];
   const seen = new Set<string>();
@@ -100,6 +122,8 @@ export function detectGantryCandidates(
         distanceFromRouteMeters: Math.round(closest),
         verificationStatus: gantry.verificationStatus,
         detection: "segment_proximity",
+        source: gantry.source,
+        sourceLicense: gantry.sourceLicense,
       });
     }
   }
@@ -109,6 +133,6 @@ export function detectGantryCandidates(
     candidates,
     coverage: "incomplete",
     matchingMethod: "segment_proximity",
-    note: "Busca apenas no cadastro piloto disponível. Proximidade de coordenadas não comprova passagem pelo pórtico ou cobrança; a quantidade real permanece desconhecida.",
+    note: "Busca em posições piloto e coordenadas publicadas por fonte intermediária. A cobertura é incompleta; proximidade não comprova passagem pela pista tarifada nem cobrança. A quantidade real permanece desconhecida.",
   };
 }
