@@ -35,6 +35,21 @@ describe("Painel de resultados", () => {
     expect(content).not.toContain("R$");
     expect(content).toContain("Não há comprovação");
   });
+  it("mostra candidatos da rota sem afirmar cobrança confirmada ou economia", () => {
+    const {content}=render({
+      status:"not_verified", route:{metrics:{distanceKm:30,durationMinutes:45}},
+      gantries:{coverage:"incomplete",count:null,candidatesCount:1,candidates:[
+        {id:"piloto",label:"Simão Pereira",road:"BR-040"}
+      ]},
+    });
+    expect(content).toContain("Pórticos próximos (candidatos)");
+    expect(content).toContain("Cadastro piloto incompleto");
+    expect(content).toContain("Simão Pereira");
+    expect(content).toContain("não verificado");
+    expect(content).toContain("Pórticos Free Flow evitados");
+    expect(content).toContain("Não calculada");
+  });
+
   it("ignora alegações de economia ou pórticos não verificados", () => {
     const {content}=render({
       status:"verified",
